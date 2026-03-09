@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoRALabs — Teach small models to outperform giant ones</title>
+    <meta name="description" content="Frontier model quality from models you own. LoRALabs is an adaptive fine-tuning platform where engineers shape the AI — a 7B model that beats frontier on your code at a fraction of the cost.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://loralabs.eu/">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="LoRALabs — Teach small models to outperform giant ones">
+    <meta property="og:description" content="Frontier model quality from models you own. A 7B model that beats frontier on your code — 5-15x cheaper.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://loralabs.eu/">
+    <meta property="og:image" content="https://loralabs.eu/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="LoRALabs — Teach small models to outperform giant ones">
+    <meta property="og:site_name" content="LoRALabs">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LoRALabs — Teach small models to outperform giant ones">
+    <meta name="twitter:description" content="Frontier model quality from models you own. A 7B model that beats frontier on your code — 5-15x cheaper.">
+    <meta name="twitter:image" content="https://loralabs.eu/og.png">
+    <meta name="twitter:image:alt" content="LoRALabs — Teach small models to outperform giant ones">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%234f46e5'/><stop offset='100%25' stop-color='%239333ea'/></linearGradient></defs><rect width='32' height='32' rx='6' fill='url(%23g)'/><text x='16' y='22' text-anchor='middle' fill='white' font-family='system-ui' font-weight='700' font-size='18'>L</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%234f46e5'/><stop offset='100%25' stop-color='%239333ea'/></linearGradient></defs><rect width='180' height='180' rx='36' fill='url(%23g)'/><text x='90' y='124' text-anchor='middle' fill='white' font-family='system-ui' font-weight='700' font-size='100'>L</text></svg>">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "LoRALabs",
+        "url": "https://loralabs.eu",
+        "description": "Adaptive fine-tuning platform — frontier model quality from models you own and control.",
+        "foundingDate": "2025"
+    }
+    </script>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --indigo-50: #eef2ff;
+            --indigo-100: #e0e7ff;
+            --indigo-500: #6366f1;
+            --indigo-600: #4f46e5;
+            --indigo-700: #4338ca;
+            --purple-400: #c084fc;
+            --purple-500: #a855f7;
+            --purple-600: #9333ea;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Nav ── */
+        nav {
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 72rem;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .nav-contact {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.15s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-contact:hover {
+            color: var(--gray-900);
+        }
+
+        /* ── Hero ── */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 2.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 44rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.75rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.3rem 0.875rem;
+            border-radius: 9999px;
+            background: var(--indigo-50);
+            border: 1px solid var(--indigo-100);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--indigo-600);
+            letter-spacing: 0.02em;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--indigo-500);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.035em;
+            color: var(--gray-900);
+        }
+
+        h1 .gradient-text {
+            background: linear-gradient(135deg, var(--indigo-600), var(--purple-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--gray-500);
+            max-width: 36rem;
+        }
+
+        .stats-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.125rem 0;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.125rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--indigo-600), var(--purple-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            white-space: nowrap;
+        }
+
+        .stat-label {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            letter-spacing: 0.01em;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 2.5rem;
+            background: var(--gray-200);
+        }
+
+        .cta-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .cta-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8125rem 1.75rem;
+            border-radius: 0.625rem;
+            background: linear-gradient(135deg, var(--indigo-600), var(--purple-600));
+            color: white;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .cta-email:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .cta-email svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ── LoRA Visual ── */
+        .lora-visual {
+            position: relative;
+            width: 100%;
+            max-width: 44rem;
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        .lora-visual svg {
+            width: 100%;
+            height: auto;
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero { animation: fade-in-up 0.6s ease-out; }
+        .lora-visual { animation: fade-in-up 0.6s ease-out 0.15s both; }
+
+        /* ── Brand ── */
+        .brand {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--gray-400);
+        }
+
+        .brand-l {
+            background: linear-gradient(135deg, var(--indigo-600), var(--purple-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        footer .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        footer a, footer button.footer-email {
+            color: var(--gray-500);
+            text-decoration: none;
+            background: none;
+            border: none;
+            font: inherit;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        footer a:hover, footer button.footer-email:hover {
+            color: var(--gray-900);
+        }
+
+        .eu-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.6875rem;
+            color: var(--gray-400);
+            letter-spacing: 0.01em;
+        }
+
+        .eu-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1.0625rem; }
+            .stats-row { gap: 1rem; }
+            .stat-value { font-size: 1.25rem; }
+            .stat-label { font-size: 0.6875rem; }
+            nav { display: none; }
+            main { padding: 1.5rem; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand">LoRA<span class="brand-l">L</span>abs</div>
+        <button class="nav-contact" onclick="openMail()">Contact</button>
+    </nav>
+
+    <main>
+        <div class="hero">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                Coming soon
+            </div>
+
+            <h1>
+                Teach small models to<br>
+                <span class="gradient-text">outperform giant ones</span>
+            </h1>
+
+            <p class="subtitle">
+                Frontier model quality from models you own and control.
+                LoRALabs is an adaptive fine-tuning platform where your
+                engineers shape the AI — not the other way around.
+            </p>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="stat-value">Frontier quality</span>
+                    <span class="stat-label">from models you own and control</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">5–15x</span>
+                    <span class="stat-label">lower cost per query</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">5 min</span>
+                    <span class="stat-label">of engineer time per day</span>
+                </div>
+            </div>
+
+            <div class="cta-row">
+                <button class="cta-email" onclick="openMail()">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="14" height="10" rx="2"/>
+                        <path d="M1 3l7 5 7-5"/>
+                    </svg>
+                    Get in touch
+                </button>
+            </div>
+        </div>
+
+        <!-- LoRA parallel-path visual: input → fork → W (top) | A×B (bottom) → ⊕ → output -->
+        <div class="lora-visual">
+            <svg viewBox="0 0 560 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad-ab" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#4f46e5"/>
+                        <stop offset="100%" stop-color="#9333ea"/>
+                    </linearGradient>
+                    <linearGradient id="grad-a" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#4f46e5"/>
+                        <stop offset="100%" stop-color="#6366f1"/>
+                    </linearGradient>
+                    <linearGradient id="grad-b" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#7c3aed"/>
+                        <stop offset="100%" stop-color="#a855f7"/>
+                    </linearGradient>
+                    <linearGradient id="w-top" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="white" stop-opacity="0.5"/>
+                        <stop offset="100%" stop-color="#f9fafb" stop-opacity="0.25"/>
+                    </linearGradient>
+                    <filter id="w-shd" x="-5%" y="-3%" width="110%" height="110%">
+                        <feDropShadow dx="0" dy="1.5" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.14"/>
+                    </filter>
+                    <filter id="ab-shd" x="-8%" y="-8%" width="116%" height="116%">
+                        <feDropShadow dx="0" dy="1" stdDeviation="4" flood-color="#6366f1" flood-opacity="0.16"/>
+                    </filter>
+                    <filter id="sum-shd" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#6366f1" flood-opacity="0.12"/>
+                    </filter>
+                </defs>
+
+                <!-- ═══ Wiring: fork + merge paths ═══ -->
+                <!-- Input line -->
+                <line x1="10" y1="110" x2="56" y2="110" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Input arrow tip -->
+                <path d="M50,106 L58,110 L50,114" fill="#9ca3af"/>
+
+                <!-- Fork dot -->
+                <circle cx="62" cy="110" r="4" fill="#6b7280" stroke="white" stroke-width="1"/>
+
+                <!-- Top path: fork → W → merge (PRIMARY — thicker, darker) -->
+                <path d="M62,110 Q62,55 100,55 L160,55" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M380,55 L430,55 Q470,55 470,110" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+                <!-- Bottom path: fork → A → B → merge (learned delta — thinner, colored) -->
+                <path d="M62,110 Q62,170 100,170 L148,170" stroke="url(#grad-ab)" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.4"/>
+                <path d="M390,170 L430,170 Q470,170 470,110" stroke="url(#grad-ab)" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.4"/>
+
+                <!-- Path labels near sum node -->
+                <text x="445" y="70" text-anchor="end" fill="#6b7280" font-family="'SF Mono','Fira Code',monospace" font-size="7.5" font-weight="500">W&#183;x</text>
+                <text x="445" y="156" text-anchor="end" fill="#8b5cf6" font-family="'SF Mono','Fira Code',monospace" font-size="7.5" font-weight="500" opacity="0.6">B&#183;A&#183;x</text>
+
+                <!-- ═══ W — frozen base weights (top path) ═══ -->
+                <g filter="url(#w-shd)">
+                    <rect x="160" y="16" width="220" height="78" rx="8" fill="white" stroke="#e2e5ea" stroke-width="1"/>
+                </g>
+                <rect x="160" y="16" width="220" height="78" rx="8" fill="url(#w-top)"/>
+
+                <!-- W grid -->
+                <g stroke="#e5e7eb" stroke-width="0.5" opacity="0.5">
+                    <line x1="160" y1="35.5" x2="380" y2="35.5"/>
+                    <line x1="160" y1="55" x2="380" y2="55"/>
+                    <line x1="160" y1="74.5" x2="380" y2="74.5"/>
+                    <line x1="197" y1="16" x2="197" y2="94"/>
+                    <line x1="233" y1="16" x2="233" y2="94"/>
+                    <line x1="270" y1="16" x2="270" y2="94"/>
+                    <line x1="307" y1="16" x2="307" y2="94"/>
+                    <line x1="343" y1="16" x2="343" y2="94"/>
+                </g>
+                <!-- W zebra -->
+                <rect x="161" y="17" width="218" height="18.5" fill="#f8f9fa" opacity="0.45"/>
+                <rect x="161" y="55" width="218" height="19.5" fill="#f8f9fa" opacity="0.45"/>
+
+                <!-- W values -->
+                <g font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="7" font-weight="400" text-anchor="end">
+                    <g fill="#7a8291">
+                        <text x="189" y="30">0.021</text><text x="225" y="30">-0.14</text><text x="262" y="30">0.008</text><text x="299" y="30">-0.03</text><text x="336" y="30">0.061</text><text x="373" y="30">-0.09</text>
+                    </g>
+                    <g fill="#a0a7b2">
+                        <text x="189" y="49.5">0.107</text><text x="225" y="49.5">-0.05</text><text x="262" y="49.5">0.042</text><text x="299" y="49.5">0.091</text><text x="336" y="49.5">-0.02</text><text x="373" y="49.5">0.034</text>
+                    </g>
+                    <g fill="#7a8291">
+                        <text x="189" y="69">-0.06</text><text x="225" y="69">0.013</text><text x="262" y="69">-0.11</text><text x="299" y="69">0.034</text><text x="336" y="69">0.076</text><text x="373" y="69">-0.05</text>
+                    </g>
+                    <g fill="#a0a7b2">
+                        <text x="189" y="88.5">0.003</text><text x="225" y="88.5">0.076</text><text x="262" y="88.5">-0.02</text><text x="299" y="88.5">0.058</text><text x="336" y="88.5">0.015</text><text x="373" y="88.5">0.047</text>
+                    </g>
+                </g>
+
+                <!-- W watermark -->
+                <text x="270" y="64" text-anchor="middle" fill="#dde0e4" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="-0.03em">W</text>
+
+                <!-- ═══ A — tall narrow adapter (bottom-left) ═══ -->
+                <g filter="url(#ab-shd)">
+                    <rect x="148" y="140" width="36" height="60" rx="7" fill="url(#grad-a)"/>
+                </g>
+                <rect x="149.5" y="141.5" width="33" height="57" rx="6" fill="none" stroke="white" stroke-width="0.5" opacity="0.2"/>
+                <!-- A grid -->
+                <g stroke="white" stroke-width="0.3" opacity="0.1">
+                    <line x1="166" y1="146" x2="166" y2="194"/>
+                    <line x1="148" y1="155" x2="184" y2="155"/>
+                    <line x1="148" y1="170" x2="184" y2="170"/>
+                    <line x1="148" y1="185" x2="184" y2="185"/>
+                </g>
+                <!-- A values -->
+                <g font-family="'SF Mono',monospace" font-size="5" fill="white" opacity="0.35" text-anchor="middle">
+                    <text x="157" y="153">.31</text><text x="175" y="153">-.08</text>
+                    <text x="157" y="165">-.14</text><text x="175" y="165">.22</text>
+                    <text x="157" y="178">.07</text><text x="175" y="178">-.19</text>
+                    <text x="157" y="191">.45</text><text x="175" y="191">.11</text>
+                </g>
+                <!-- A watermark -->
+                <text x="166" y="175" text-anchor="middle" fill="white" font-family="Inter,sans-serif" font-size="18" font-weight="800" opacity="0.15">A</text>
+
+                <!-- Multiply sign -->
+                <text x="200" y="175" text-anchor="middle" fill="#8b5cf6" font-family="Inter,sans-serif" font-size="16" font-weight="300" opacity="0.5">&#215;</text>
+
+                <!-- ═══ B — short wide adapter (bottom-right) ═══ -->
+                <g filter="url(#ab-shd)">
+                    <rect x="216" y="148" width="174" height="44" rx="7" fill="url(#grad-b)"/>
+                </g>
+                <rect x="217.5" y="149.5" width="171" height="41" rx="6" fill="none" stroke="white" stroke-width="0.5" opacity="0.2"/>
+                <!-- B grid -->
+                <g stroke="white" stroke-width="0.3" opacity="0.1">
+                    <line x1="222" y1="170" x2="384" y2="170"/>
+                    <line x1="245" y1="148" x2="245" y2="192"/>
+                    <line x1="274" y1="148" x2="274" y2="192"/>
+                    <line x1="303" y1="148" x2="303" y2="192"/>
+                    <line x1="332" y1="148" x2="332" y2="192"/>
+                    <line x1="361" y1="148" x2="361" y2="192"/>
+                </g>
+                <!-- B values -->
+                <g font-family="'SF Mono',monospace" font-size="5" fill="white" opacity="0.35" text-anchor="middle">
+                    <text x="231" y="163">.19</text><text x="260" y="163">-.42</text><text x="289" y="163">.08</text><text x="318" y="163">.35</text><text x="347" y="163">-.11</text><text x="375" y="163">.27</text>
+                    <text x="231" y="185">-.23</text><text x="260" y="185">.14</text><text x="289" y="185">.39</text><text x="318" y="185">-.06</text><text x="347" y="185">.31</text><text x="375" y="185">-.18</text>
+                </g>
+                <!-- B watermark -->
+                <text x="303" y="176" text-anchor="middle" fill="white" font-family="Inter,sans-serif" font-size="18" font-weight="800" opacity="0.15">B</text>
+
+                <!-- ═══ Sum node ⊕ ═══ -->
+                <g filter="url(#sum-shd)">
+                    <circle cx="470" cy="110" r="14" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                </g>
+                <line x1="462" y1="110" x2="478" y2="110" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="470" y1="102" x2="470" y2="118" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- Output arrow — blended, both paths contributed -->
+                <line x1="484" y1="110" x2="526" y2="110" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                <path d="M522,105.5 L532,110 L522,114.5" fill="#6b7280" opacity="0.5"/>
+                <!-- "output" label: h = W·x + B·A·x -->
+                <text x="540" y="113" text-anchor="start" fill="#9ca3af" font-family="Inter,sans-serif" font-size="8" font-weight="500">h</text>
+
+                <!-- "x" input label -->
+                <text x="6" y="113" text-anchor="end" fill="#9ca3af" font-family="Inter,sans-serif" font-size="8" font-weight="500">x</text>
+
+                <!-- ═══ Animated particles — bottom path (A×B) ═══ -->
+                <circle r="2.5" fill="#818cf8">
+                    <animateMotion dur="3s" repeatCount="indefinite" path="M62,110 Q62,170 100,170 L148,170 L184,170 L216,170 L390,170 L430,170 Q470,170 470,110"/>
+                    <animate attributeName="opacity" values="0;0.7;0.6;0.5;0.3;0" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2" fill="#a78bfa">
+                    <animateMotion dur="3s" begin="1s" repeatCount="indefinite" path="M62,110 Q62,170 100,170 L148,170 L184,170 L216,170 L390,170 L430,170 Q470,170 470,110"/>
+                    <animate attributeName="opacity" values="0;0.6;0.5;0.4;0.2;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="1.5" fill="#c4b5fd">
+                    <animateMotion dur="3s" begin="2s" repeatCount="indefinite" path="M62,110 Q62,170 100,170 L148,170 L184,170 L216,170 L390,170 L430,170 Q470,170 470,110"/>
+                    <animate attributeName="opacity" values="0;0.5;0.4;0.3;0.15;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+                </circle>
+
+                <!-- Particles on top path (W) — prominent, this is the primary data flow -->
+                <circle r="3" fill="#9ca3af">
+                    <animateMotion dur="2.2s" repeatCount="indefinite" path="M62,110 Q62,55 100,55 L160,55 L380,55 L430,55 Q470,55 470,110"/>
+                    <animate attributeName="opacity" values="0;0.6;0.5;0.4;0.2;0" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2.5" fill="#6b7280">
+                    <animateMotion dur="2.2s" begin="0.7s" repeatCount="indefinite" path="M62,110 Q62,55 100,55 L160,55 L380,55 L430,55 Q470,55 470,110"/>
+                    <animate attributeName="opacity" values="0;0.5;0.45;0.35;0.15;0" dur="2.2s" begin="0.7s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2" fill="#9ca3af">
+                    <animateMotion dur="2.2s" begin="1.4s" repeatCount="indefinite" path="M62,110 Q62,55 100,55 L160,55 L380,55 L430,55 Q470,55 470,110"/>
+                    <animate attributeName="opacity" values="0;0.45;0.4;0.3;0.1;0" dur="2.2s" begin="1.4s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <span>&copy; 2026 LoRALabs</span>
+            <span>&middot;</span>
+            <button class="footer-email" onclick="openMail()">Contact</button>
+        </div>
+        <div class="eu-badge">
+            <svg viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="7" fill="#003399"/>
+                <g fill="#FFCC00">
+                    <circle cx="8" cy="2.5" r="0.7"/>
+                    <circle cx="10.75" cy="3.25" r="0.7"/>
+                    <circle cx="12.5" cy="5.5" r="0.7"/>
+                    <circle cx="12.5" cy="8" r="0.7"/>
+                    <circle cx="12.5" cy="10.5" r="0.7"/>
+                    <circle cx="10.75" cy="12.75" r="0.7"/>
+                    <circle cx="8" cy="13.5" r="0.7"/>
+                    <circle cx="5.25" cy="12.75" r="0.7"/>
+                    <circle cx="3.5" cy="10.5" r="0.7"/>
+                    <circle cx="3.5" cy="8" r="0.7"/>
+                    <circle cx="3.5" cy="5.5" r="0.7"/>
+                    <circle cx="5.25" cy="3.25" r="0.7"/>
+                </g>
+            </svg>
+            Made in the EU
+        </div>
+    </footer>
+
+    <!-- Bot-proof email: assembled at runtime, no mailto: in source -->
+    <script>
+        function openMail() {
+            var u = 'info';
+            var d = 'loralabs.eu';
+            window.location.href = 'mai' + 'lto:' + u + '@' + d;
+        }
+    </script>
+</body>
+</html>
